@@ -17,4 +17,4 @@ Do as follows step by step:
 
 ## More
 
-the data used is Cooco Dataset
+the dataset is Cooco Dataset
