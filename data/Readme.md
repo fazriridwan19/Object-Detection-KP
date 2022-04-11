@@ -1,1 +1,1 @@
-## This is not dataset, this is data that i used for tracking when the object was detected
+## This is the data I use to record when an object was detected
