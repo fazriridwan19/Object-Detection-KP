@@ -30,10 +30,10 @@ while True:
         (x, y, w, h) = bbox
         class_name = classes[class_id]
         rounded_score = str(round(score, 2))
-        threshold = 0.7
-        createData(class_name, str(datetime.datetime.now()))
+        threshold = 0.8
 
         if score > threshold:
+            createData(class_name, str(datetime.datetime.now()))
             if class_id == 0:
                 cv2.putText(frame, str(class_name + ' ({})'.format(rounded_score)), (x, y - 10), cv2.FONT_HERSHEY_PLAIN, 2, (200, 0, 40), 2)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (200, 0, 40), 3)

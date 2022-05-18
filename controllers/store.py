@@ -1,9 +1,8 @@
 import datetime
-import time
-import os
 import json
-
 from scipy.fftpack import diff
+import pymongo
+
 DATA_PATH = 'F:\Object Detection Project\data'
 
 def storeToJson(data_lists):
@@ -17,36 +16,33 @@ def loadFromJson():
         json_object = json.load(file)
     return json_object
 
+def storeToDb(data):
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    db = client["object_detection"]
+    db["objects"].insert_many(data)
+
 def createData(class_name, date):
     data = {
         "nama": class_name,
         "date": date
     }
     data_lists = loadFromJson()
-    dateFromList = datetime.datetime.strptime(data_lists[-1]["date"], "%Y-%m-%d %H:%M:%S.%f")
-    currentDate = datetime.datetime.strptime(data["date"], "%Y-%m-%d %H:%M:%S.%f")
-    diff = currentDate - dateFromList
 
-    if data["nama"] == data_lists[-1]["nama"]:
-        if diff.total_seconds() > 30:
+    if len(data_lists) != 0:
+        dateFromList = datetime.datetime.strptime(data_lists[-1]["date"], "%Y-%m-%d %H:%M:%S.%f")
+        currentDate = datetime.datetime.strptime(data["date"], "%Y-%m-%d %H:%M:%S.%f")
+        diff = currentDate - dateFromList
+
+        if data["nama"] == data_lists[-1]["nama"]:
+            if diff.total_seconds() > 60:
+                data_lists.append(data)
+                storeToJson(data_lists)
+                storeToDb(data_lists)
+        else:
             data_lists.append(data)
             storeToJson(data_lists)
-    else:
+            storeToDb(data_lists)
+    else :
         data_lists.append(data)
         storeToJson(data_lists)
-    
-# createData("car", str(datetime.datetime.now()))
-# # datetime(year, month, day, hour, minute, second)
-# a = datetime.datetime(2022, 4, 11, 10, 0, 0)
-# b = datetime.datetime(2022, 4, 11, 10, 0, 40)
-
-# # returns a timedelta object
-# c = b-a
-# print('Difference: ', c.total_seconds())
-
-# minutes = c.total_seconds() / 60
-# print('Total difference in minutes: ', minutes)
-
-# # returns the difference of the time of the day
-# minutes = c.seconds / 60
-# print('Difference in minutes: ', minutes)
+        storeToDb(data_lists)
