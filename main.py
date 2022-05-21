@@ -1,6 +1,6 @@
 import cv2
 import datetime
-from controllers.store import createData
+from utils.store import createData
 from cv2 import threshold
 from numpy import size
 
